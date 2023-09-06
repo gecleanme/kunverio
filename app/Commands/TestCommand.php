@@ -4,6 +4,10 @@ namespace App\Commands;
 
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use PhpSchool\CliMenu\Builder\CliMenuBuilder;
+use function Termwind\{render};
+
+
 
 class TestCommand extends Command
 {
@@ -28,12 +32,51 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        // $options = ['Feet', 'Inch', 'Centimeter','Kilometer'];
 
-        $list = (new CliMenuBuilider()) //still unrecognized 
-        ->setTitle('Choose Unit to convert from')
-            ->build();
-        $list->open();
 
+        // $menu = (new CliMenuBuilder)
+        // ->setForegroundColour('green')
+        // ->setBackgroundColour('black')
+        // ->setTitle('Choose a unit to Convert from')
+        // ->addItem("feet","Feet")
+        // ->build();
+        // $menu->open();
+
+
+        //  function buildMenu(CliMenu $menu)
+        // {
+
+        // }
+
+
+
+        $from_unit = $this->menu('Choose a length Unit to convert from')
+                    ->setForegroundColour('green')
+                    ->setBackgroundColour('black')
+                    ->addOption('inch', 'Inch')
+                    ->addOption('centimeter', 'Centimeter')
+                    ->addOption('feet', 'Feet')
+                    ->setWidth(80)
+                    ->open();
+
+        $value = $this->menu("Enter Value")
+               ->addQuestion('Select to Enter', "Length in $from_unit" )
+               ->setWidth(80)
+        ->open();
+
+
+        $to_unit = $this->menu('Choose a length Unit to convert to')
+                    ->setForegroundColour('green')
+                    ->setBackgroundColour('black')
+                    ->addOption('inch', 'Inch')
+                    ->addOption('centimeter', 'Centimeter')
+                    ->addOption('feet', 'Feet')
+                    ->setWidth(80)
+                    ->open();
+
+
+                    
         function to_meter($from_unit, $value)
         {
             switch ($from_unit) {
@@ -81,8 +124,28 @@ class TestCommand extends Command
         }
 
 
-        $in_meter = round(to_meter($from_unit, $value), 3);
-        $tovalue = round(from_meter($to_unit, $in_meter), 3);
+        $in_meter = round(to_meter($from_unit, $value), 3); // first convert to meter
+        $tovalue = round(from_meter($to_unit, $in_meter), 3); //then convert from meter
+
+
+
+
+        $render_string= '<div class="py-1 ml-2">
+            <div class="px-1 bg-blue-300 text-black">Kunverio</div>
+            <em class="ml-1 bg-yellow-500 text-black">
+            Converting '. $value .' '.$from_unit .' to '. $to_unit.'
+        </em>
+
+
+        <b class="block bg-green-500 text-white p-8"> '. $value .' '.$from_unit .' is '. $tovalue. ' '.$to_unit.'  </b>
+
+        </div>';
+
+        render($render_string);
+        
+    
+        exit();
+
 
     }
 
