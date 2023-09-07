@@ -11,25 +11,10 @@ use function Termwind\{render};
 
 class TestCommand extends Command
 {
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'test';
+    protected $signature = 'run';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Command description';
+    protected $description = 'Run the Script';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         $from_unit = $this->menu('Choose a length Unit to convert from')
