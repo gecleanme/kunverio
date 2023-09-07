@@ -32,31 +32,17 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        // $options = ['Feet', 'Inch', 'Centimeter','Kilometer'];
-
-
-        // $menu = (new CliMenuBuilder)
-        // ->setForegroundColour('green')
-        // ->setBackgroundColour('black')
-        // ->setTitle('Choose a unit to Convert from')
-        // ->addItem("feet","Feet")
-        // ->build();
-        // $menu->open();
-
-
-        //  function buildMenu(CliMenu $menu)
-        // {
-
-        // }
-
-
-
         $from_unit = $this->menu('Choose a length Unit to convert from')
                     ->setForegroundColour('green')
                     ->setBackgroundColour('black')
                     ->addOption('inch', 'Inch')
                     ->addOption('centimeter', 'Centimeter')
                     ->addOption('feet', 'Feet')
+                    ->addOption('yard', 'Yard')
+                    ->addOption('mile', 'Mile')
+                    ->addOption('meter', 'Meter')
+                    ->addOption('millileter', 'Millileter')
+                    ->addOption('kilometer', 'Kilometer')
                     ->setWidth(80)
                     ->open();
 
@@ -72,6 +58,11 @@ class TestCommand extends Command
                     ->addOption('inch', 'Inch')
                     ->addOption('centimeter', 'Centimeter')
                     ->addOption('feet', 'Feet')
+                    ->addOption('yard', 'Yard')
+                    ->addOption('mile', 'Mile')
+                    ->addOption('meter', 'Meter')
+                    ->addOption('millileter', 'Millileter')
+                    ->addOption('kilometer', 'Kilometer')
                     ->setWidth(80)
                     ->open();
 
@@ -123,40 +114,34 @@ class TestCommand extends Command
             }
         }
 
+        if(is_numeric($value)){
 
         $in_meter = round(to_meter($from_unit, $value), 3); // first convert to meter
         $tovalue = round(from_meter($to_unit, $in_meter), 3); //then convert from meter
+        }
 
+        else{
+            $render_string ='<div class="py-1 ml-2 w-full justify-center text-center text-white bg-red-500">Invalid Input</div>';
+            render($render_string);
+            exit();
+        }
 
+        
 
-
-        $render_string= '<div class="py-1 ml-2">
+        $render_string= '<div class="py-1 ml-2 w-full justify-center text-center">
             <div class="px-1 bg-blue-300 text-black">Kunverio</div>
             <em class="ml-1 bg-yellow-500 text-black">
             Converting '. $value .' '.$from_unit .' to '. $to_unit.'
         </em>
 
 
-        <b class="block bg-green-500 text-white p-8"> '. $value .' '.$from_unit .' is '. $tovalue. ' '.$to_unit.'  </b>
+        <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '. $value .' '.$from_unit .' is '. $tovalue. ' '.$to_unit.'  </b>
 
         </div>';
-
+        
         render($render_string);
         
+
     
-        exit();
-
-
-    }
-
-    /**
-     * Define the command's schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
-     */
-    public function schedule(Schedule $schedule): void
-    {
-        // $schedule->command(static::class)->everyMinute();
     }
 }
