@@ -26,17 +26,17 @@ class RunBetterCommand extends Command
         $value = 0;
         $from_unit = '';
         $to_unit = '';
-    
-    
-     
+
+
+
         $fromCallable = function (CliMenu $menu) use (&$from_unit) {
             if ($menu->getSelectedItem()->showsItemExtra()) {
                 $menu->getSelectedItem()->hideItemExtra();
             } else {
                 $menu->getSelectedItem()->showItemExtra();
             }
-               $menu->redraw();
-               $from_unit = $menu->getSelectedItem()->getText();
+            $menu->redraw();
+            $from_unit = $menu->getSelectedItem()->getText();
         };
 
         $toCallable = function (CliMenu $menu) use (&$to_unit) {
@@ -45,35 +45,37 @@ class RunBetterCommand extends Command
             } else {
                 $menu->getSelectedItem()->showItemExtra();
             }
-               $menu->redraw();
+            $menu->redraw();
 
             $to_unit = $menu->getSelectedItem()->getText();
         };
 
 
 
-    $valueCallable = function (CliMenu $menu) use (&$value, &$from_unit, &$to_unit) {
+        $valueCallable = function (CliMenu $menu) use (&$value, &$from_unit, &$to_unit) {
 
-        $style = (new MenuStyle())
-            ->setBg('yellow')
-            ->setFg('black');
-            
-        $input = new class (new InputIO($menu, $menu->getTerminal()), $style) extends Text {
-            public function validate(string $value) : bool
-            {
-                if(is_numeric($value))
-                return true;
-                else return false;
-            }
-        };
-        
-        $value = $input->setPromptText('Enter Length in '.$from_unit.'')->ask()->fetch();
+            $style = (new MenuStyle())
+                ->setBg('yellow')
+                ->setFg('black');
 
-        
-        $in_meter = round($this->to_meter($from_unit, $value), 3); // first convert to meter
-        $tovalue = round($this->from_meter($to_unit, $in_meter), 3); //then convert from meter
+            $input = new class (new InputIO($menu, $menu->getTerminal()), $style) extends Text {
+                public function validate(string $value) : bool
+                {
+                    if(is_numeric($value))
+                        return true;
+                    else return false;
+                }
+            };
 
-        $render_string= '<div class="py-1 ml-2 w-full justify-center text-center">
+            $value = $input->setPromptText('Enter Length in '.$from_unit.'')->ask()->fetch();
+
+
+            $in_meter = round($this->to_meter($from_unit, $value), 3); // first convert to meter
+            $tovalue = round($this->from_meter($to_unit, $in_meter), 3); //then convert from meter
+
+            $menu->close();
+
+            $render_string= '<div class="py-1 ml-2 w-full justify-center text-center">
         <div class="px-1 bg-blue-300 text-black">Kunverio</div>
         <em class="ml-1 bg-yellow-500 text-black">
         Converting '. $value .' '.$from_unit.' to '.$to_unit.'
@@ -82,9 +84,9 @@ class RunBetterCommand extends Command
 
         </div>';
 
-        render($render_string);
+            render($render_string);
 
-    };
+        };
 
 
 
@@ -101,28 +103,28 @@ class RunBetterCommand extends Command
             ->modifySelectableStyle(function (SelectableStyle $style) {
                 $style->setItemExtra('[SELECTED]');
             })
-            ->addSubMenu('Submenu', function (CliMenuBuilder $b) use ($toCallable, $valueCallable) {
+            ->addSubMenu('Next', function (CliMenuBuilder $b) use ($toCallable, $valueCallable) {
                 $b->setTitle('Step II: Select a Length unit to convert to')
-                        ->addItem('Inch', $toCallable)
-                        ->addItem('Feet', $toCallable)
-                        ->addItem('Yard', $toCallable)
-                        ->addItem('Mile', $toCallable)
-                        ->addItem('Meter', $toCallable)
-                        ->addItem('Kilometer', $toCallable)
-                        ->addItem('Millimeter', $toCallable)
-                        ->addItem('Centimeter', $toCallable)
-                        ->modifySelectableStyle(function (SelectableStyle $style) {
+                    ->addItem('Inch', $toCallable)
+                    ->addItem('Feet', $toCallable)
+                    ->addItem('Yard', $toCallable)
+                    ->addItem('Mile', $toCallable)
+                    ->addItem('Meter', $toCallable)
+                    ->addItem('Kilometer', $toCallable)
+                    ->addItem('Millimeter', $toCallable)
+                    ->addItem('Centimeter', $toCallable)
+                    ->modifySelectableStyle(function (SelectableStyle $style) {
                         $style->setItemExtra('[SELECTED]');
                     })
-                    ->addSubMenu('Submenu', function (CliMenuBuilder $c) use ($valueCallable) {
+                    ->addSubMenu('Next', function (CliMenuBuilder $c) use ($valueCallable) {
                         $c->setTitle('Step III: Measurment Value')
                             ->addItem('Enter Value', $valueCallable);
-                            
+
                     });
             })
             ->addLineBreak('-')
             ->setWidth(80)
-            ->setMarginAuto()     
+            ->setMarginAuto()
             ->setForegroundColour('green')
             ->setBackgroundColour('black')
             ->build()
@@ -173,6 +175,19 @@ class RunBetterCommand extends Command
                 return $value / 1000;
 
         }
+    }
+
+
+    protected function getMenuItems(CliMenuBuilder $menu, $callable)
+    {
+        $units = ['Inch' , 'Feet', 'Yard','Mile','Millimeter','Centimeter','Meter','Kilometer'];
+
+        foreach($units as $unit){
+            $menu->addItem($unit, $callable);
+        }
+
+
+
     }
 
 
