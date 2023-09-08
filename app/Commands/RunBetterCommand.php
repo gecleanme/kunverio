@@ -7,6 +7,7 @@ use LaravelZero\Framework\Commands\Command;
 use PhpSchool\CliMenu\Builder\CliMenuBuilder;
 use PhpSchool\CliMenu\CliMenu;
 use PhpSchool\CliMenu\MenuStyle;
+use PhpSchool\CliMenu\Style\SelectableStyle;
 use PhpSchool\CliMenu\Input\Text;
 use PhpSchool\CliMenu\Input\InputIO;
 use function Termwind\{render};
@@ -22,37 +23,97 @@ class RunBetterCommand extends Command
     public function handle()
     {
 
-        $value = 100;
+        $value = 0;
         $from_unit = '';
         $to_unit = '';
     
     
      
         $fromCallable = function (CliMenu $menu) use (&$from_unit) {
+            if ($menu->getSelectedItem()->showsItemExtra()) {
+                $menu->getSelectedItem()->hideItemExtra();
+            } else {
+                $menu->getSelectedItem()->showItemExtra();
+            }
+               $menu->redraw();
                $from_unit = $menu->getSelectedItem()->getText();
-               echo $from_unit;
         };
 
         $toCallable = function (CliMenu $menu) use (&$to_unit) {
+            if ($menu->getSelectedItem()->showsItemExtra()) {
+                $menu->getSelectedItem()->hideItemExtra();
+            } else {
+                $menu->getSelectedItem()->showItemExtra();
+            }
+               $menu->redraw();
+
             $to_unit = $menu->getSelectedItem()->getText();
-            echo $to_unit;
-     };
+        };
 
-     $valueCallable = function (CliMenu $menu) use (&$to_unit,&$from_unit, &$value) {
 
+
+    $valueCallable = function (CliMenu $menu) use (&$value, &$from_unit, &$to_unit) {
+
+        $style = (new MenuStyle())
+            ->setBg('yellow')
+            ->setFg('black');
+            
+        $input = new class (new InputIO($menu, $menu->getTerminal()), $style) extends Text {
+            public function validate(string $value) : bool
+            {
+                if(is_numeric($value))
+                return true;
+                else return false;
+            }
+        };
+        
+        $value = $input->setPromptText('Enter Length in '.$from_unit.'')->ask()->fetch();
+
+        
         $in_meter = round($this->to_meter($from_unit, $value), 3); // first convert to meter
         $tovalue = round($this->from_meter($to_unit, $in_meter), 3); //then convert from meter
-        echo $tovalue;
- };
+
+        $render_string= '<div class="py-1 ml-2 w-full justify-center text-center">
+        <div class="px-1 bg-blue-300 text-black">Kunverio</div>
+        <em class="ml-1 bg-yellow-500 text-black">
+        Converting '. $value .' '.$from_unit.' to '.$to_unit.'
+        </em>
+        <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '. $value .' '.$from_unit .' is '. $tovalue. ' '.$to_unit.'  </b>
+
+        </div>';
+
+        render($render_string);
+
+    };
 
 
 
         $menu = (new CliMenuBuilder)
             ->setTitle('Step I: Select a Length unit to convert from')
+            ->addItem('Inch', $fromCallable)
             ->addItem('Feet', $fromCallable)
+            ->addItem('Yard', $fromCallable)
+            ->addItem('Mile', $fromCallable)
+            ->addItem('Meter', $fromCallable)
+            ->addItem('Kilometer', $fromCallable)
+            ->addItem('Millimeter', $fromCallable)
+            ->addItem('Centimeter', $fromCallable)
+            ->modifySelectableStyle(function (SelectableStyle $style) {
+                $style->setItemExtra('[SELECTED]');
+            })
             ->addSubMenu('Submenu', function (CliMenuBuilder $b) use ($toCallable, $valueCallable) {
                 $b->setTitle('Step II: Select a Length unit to convert to')
-                    ->addItem('Inch', $toCallable)
+                        ->addItem('Inch', $toCallable)
+                        ->addItem('Feet', $toCallable)
+                        ->addItem('Yard', $toCallable)
+                        ->addItem('Mile', $toCallable)
+                        ->addItem('Meter', $toCallable)
+                        ->addItem('Kilometer', $toCallable)
+                        ->addItem('Millimeter', $toCallable)
+                        ->addItem('Centimeter', $toCallable)
+                        ->modifySelectableStyle(function (SelectableStyle $style) {
+                        $style->setItemExtra('[SELECTED]');
+                    })
                     ->addSubMenu('Submenu', function (CliMenuBuilder $c) use ($valueCallable) {
                         $c->setTitle('Step III: Measurment Value')
                             ->addItem('Enter Value', $valueCallable);
