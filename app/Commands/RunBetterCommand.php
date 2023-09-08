@@ -100,6 +100,7 @@ class RunBetterCommand extends Command
             ->addItem('Kilometer', $fromCallable)
             ->addItem('Millimeter', $fromCallable)
             ->addItem('Centimeter', $fromCallable)
+            ->addLineBreak('-')
             ->modifySelectableStyle(function (SelectableStyle $style) {
                 $style->setItemExtra('[SELECTED]');
             })
@@ -113,6 +114,8 @@ class RunBetterCommand extends Command
                     ->addItem('Kilometer', $toCallable)
                     ->addItem('Millimeter', $toCallable)
                     ->addItem('Centimeter', $toCallable)
+                    ->addLineBreak('-')
+
                     ->modifySelectableStyle(function (SelectableStyle $style) {
                         $style->setItemExtra('[SELECTED]');
                     })
@@ -122,7 +125,6 @@ class RunBetterCommand extends Command
 
                     });
             })
-            ->addLineBreak('-')
             ->setWidth(80)
             ->setMarginAuto()
             ->setForegroundColour('green')
