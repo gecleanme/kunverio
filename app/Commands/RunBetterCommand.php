@@ -133,7 +133,7 @@ class RunBetterCommand extends Command
             ->open();
     }
 
-    protected function to_meter($from_unit, $value)
+    protected function to_meter($from_unit, $value): float
     {
         switch ($from_unit) {
             case 'Inch':
@@ -156,7 +156,7 @@ class RunBetterCommand extends Command
         }
     }
 
-    protected function from_meter($to_unit, $value)
+    protected function from_meter($to_unit, $value) : float
     {
         switch ($to_unit) {
             case 'Inch':
