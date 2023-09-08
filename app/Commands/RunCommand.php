@@ -5,11 +5,17 @@ namespace App\Commands;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use PhpSchool\CliMenu\Builder\CliMenuBuilder;
+use PhpSchool\CliMenu\CliMenu;
+use PhpSchool\CliMenu\MenuStyle;
+use PhpSchool\CliMenu\Input\Text;
+use PhpSchool\CliMenu\Input\InputIO;
+
+
 use function Termwind\{render};
 
 
 
-class TestCommand extends Command
+class RunCommand extends Command
 {
     protected $signature = 'run';
 
@@ -17,6 +23,9 @@ class TestCommand extends Command
 
     public function handle()
     {
+        $value =0;
+        $from_unit = $to_unit = $menu= '';
+
         $from_unit = $this->menu('Choose a length Unit to convert from')
                     ->setForegroundColour('green')
                     ->setBackgroundColour('black')
@@ -31,10 +40,44 @@ class TestCommand extends Command
                     ->setWidth(80)
                     ->open();
 
-        $value = $this->menu("Enter Value")
-               ->addQuestion('Select to Enter', "Length in $from_unit" )
-               ->setWidth(80)
-        ->open();
+        $itemCallable = function (CliMenu $menu) use (&$value, &$from_unit, &$to_unit) {
+
+            $style = (new MenuStyle())
+                ->setBg('yellow')
+                ->setFg('black');
+                
+            $input = new class (new InputIO($menu, $menu->getTerminal()), $style) extends Text {
+                public function validate(string $value) : bool
+                {
+                    if(is_numeric($value)){
+                    return true;
+
+                }
+
+                    else {
+                        return false;
+                    }
+                }
+            };
+            
+            $value = $input->setPromptText('Enter Length in '.ucfirst($from_unit).'')->ask()->fetch();
+        
+        
+        };
+        
+        
+        $menu = (new CliMenuBuilder)
+            ->setTitle('Step II: Length')
+            ->addItem('Enter/Modify Length', $itemCallable)
+            ->addLineBreak('-')
+            ->setWidth(80)
+            ->setMarginAuto()     
+            ->setForegroundColour('green')
+            ->setBackgroundColour('black')
+            ->setExitButtonText("Continue")    
+            ->build();
+        
+        $menu->open();
 
 
         $to_unit = $this->menu('Choose a length Unit to convert to')
@@ -116,11 +159,11 @@ class TestCommand extends Command
         $render_string= '<div class="py-1 ml-2 w-full justify-center text-center">
             <div class="px-1 bg-blue-300 text-black">Kunverio</div>
             <em class="ml-1 bg-yellow-500 text-black">
-            Converting '. $value .' '.$from_unit .' to '. $to_unit.'
+            Converting '. $value .' '.ucfirst ($from_unit) .' to '. ucfirst($to_unit).'
         </em>
 
 
-        <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '. $value .' '.$from_unit .' is '. $tovalue. ' '.$to_unit.'  </b>
+        <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '. $value .' '.ucfirst($from_unit) .' is '. $tovalue. ' '.ucfirst($to_unit).'  </b>
 
         </div>';
         
