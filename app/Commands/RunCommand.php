@@ -35,7 +35,7 @@ class RunCommand extends Command
                     ->addOption('yard', 'Yard')
                     ->addOption('mile', 'Mile')
                     ->addOption('meter', 'Meter')
-                    ->addOption('millileter', 'Millileter')
+                    ->addOption('millimeter', 'Millimeter')
                     ->addOption('kilometer', 'Kilometer')
                     ->setWidth(80)
                     ->open();
@@ -95,7 +95,7 @@ class RunCommand extends Command
                     ->open();
 
 
-                    
+
         function to_meter($from_unit, $value)
         {
             switch ($from_unit) {
@@ -154,7 +154,7 @@ class RunCommand extends Command
             exit();
         }
 
-        
+
 
         $render_string= '<div class="py-1 ml-2 w-full justify-center text-center">
             <div class="px-1 bg-blue-300 text-black">Kunverio</div>
@@ -166,10 +166,10 @@ class RunCommand extends Command
         <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '. $value .' '.ucfirst($from_unit) .' is '. $tovalue. ' '.ucfirst($to_unit).'  </b>
 
         </div>';
-        
-        render($render_string);
-        
 
-    
+        render($render_string);
+
+
+
     }
 }
