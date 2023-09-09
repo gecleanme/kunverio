@@ -17,9 +17,14 @@
 
 -   php ^8.1
 -   composer
--   npm
 -   php-gd
 -   php-posix (Requires WSL on Windows Systems)
+
+## Demo
+
+[Watch Here](https://youtu.be/QqqtkM2ZDEc)
+
+![Demo](https://gcdnb.pbrd.co/images/52ZeJxV3MeFS.png?o=1)
 
 ## Local Dev Env Setup
 
