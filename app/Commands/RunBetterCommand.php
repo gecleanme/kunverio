@@ -2,7 +2,6 @@
 
 namespace App\Commands;
 
-use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use PhpSchool\CliMenu\Builder\CliMenuBuilder;
 use PhpSchool\CliMenu\CliMenu;
@@ -83,51 +82,32 @@ class RunBetterCommand extends Command
         <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '. $value .' '.$from_unit .' is '. $tovalue. ' '.$to_unit.'  </b>
 
         </div>'
-        
-        ;
+
+            ;
 
             render($render_string);
 
         };
 
-        // $restart = function(CliMenu $menu)
-        // {
-        //     if($menu->isOpen()){
-        //         echo 'Open';
-        //         $menu->close();
-        //         $menu->open();
-        //     }
-        //     echo 'Closed';
-        // };
-
-
-
         $menu = (new CliMenuBuilder)
             ->setTitle('Step I: Select a Length unit to convert from')
-            ->addItem('Inch', $fromCallable)
-            ->addItem('Feet', $fromCallable)
-            ->addItem('Yard', $fromCallable)
-            ->addItem('Mile', $fromCallable)
-            ->addItem('Meter', $fromCallable)
-            ->addItem('Kilometer', $fromCallable)
-            ->addItem('Millimeter', $fromCallable)
-            ->addItem('Centimeter', $fromCallable)
-            ->addLineBreak('-')
+            ->setWidth(80)
+            ->setMarginAuto()
+            ->setForegroundColour('green')
+            ->setBackgroundColour('black');
+
+        $this->getMenuItems($menu, $fromCallable);
+
+        $menu->addLineBreak('-')
             ->modifySelectableStyle(function (SelectableStyle $style) {
                 $style->setItemExtra('[SELECTED]');
             })
             ->addSubMenu('Next', function (CliMenuBuilder $b) use ($toCallable, $valueCallable) {
-                $b->setTitle('Step II: Select a Length unit to convert to')
-                    ->addItem('Inch', $toCallable)
-                    ->addItem('Feet', $toCallable)
-                    ->addItem('Yard', $toCallable)
-                    ->addItem('Mile', $toCallable)
-                    ->addItem('Meter', $toCallable)
-                    ->addItem('Kilometer', $toCallable)
-                    ->addItem('Millimeter', $toCallable)
-                    ->addItem('Centimeter', $toCallable)
-                    ->addLineBreak('-')
+                $b->setTitle('Step II: Select a Length unit to convert to');
 
+                $this->getMenuItems($b, $toCallable);
+
+                $b->addLineBreak('-')
                     ->modifySelectableStyle(function (SelectableStyle $style) {
                         $style->setItemExtra('[SELECTED]');
                     })
@@ -137,12 +117,7 @@ class RunBetterCommand extends Command
 
                     });
             })
-            ->setWidth(80)
-            ->setMarginAuto()
-            ->setForegroundColour('green')
-            ->setBackgroundColour('black')
             ->build()
-            // $menu->addCustomControlMapping('r',$restart);
             ->open();
     }
 
@@ -194,16 +169,16 @@ class RunBetterCommand extends Command
     }
 
 
-    // protected function getMenuItems(CliMenu $menu, $callable)
-    // {
-    //     $units = ['Inch' , 'Feet', 'Yard','Mile','Millimeter','Centimeter','Meter','Kilometer'];
+    protected function getMenuItems(CliMenuBuilder $menu, $callable)
+    {
+        $units = ['Inch' , 'Feet', 'Yard','Mile','Millimeter','Centimeter','Meter','Kilometer'];
 
-    //     foreach($units as $unit){
-    //         $menu->addItem($unit, $callable);
-    //     }
+        foreach($units as $unit){
+            $menu->addItem($unit, $callable);
+        }
 
 
 
-    // }
+    }
 
 }
