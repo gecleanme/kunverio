@@ -82,11 +82,23 @@ class RunBetterCommand extends Command
         </em>
         <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '. $value .' '.$from_unit .' is '. $tovalue. ' '.$to_unit.'  </b>
 
-        </div>';
+        </div>'
+        
+        ;
 
             render($render_string);
 
         };
+
+        // $restart = function(CliMenu $menu)
+        // {
+        //     if($menu->isOpen()){
+        //         echo 'Open';
+        //         $menu->close();
+        //         $menu->open();
+        //     }
+        //     echo 'Closed';
+        // };
 
 
 
@@ -130,6 +142,7 @@ class RunBetterCommand extends Command
             ->setForegroundColour('green')
             ->setBackgroundColour('black')
             ->build()
+            // $menu->addCustomControlMapping('r',$restart);
             ->open();
     }
 
@@ -177,20 +190,20 @@ class RunBetterCommand extends Command
                 return $value / 1000;
 
         }
-    }
-
-
-    protected function getMenuItems(CliMenuBuilder $menu, $callable)
-    {
-        $units = ['Inch' , 'Feet', 'Yard','Mile','Millimeter','Centimeter','Meter','Kilometer'];
-
-        foreach($units as $unit){
-            $menu->addItem($unit, $callable);
-        }
-
-
 
     }
 
+
+    // protected function getMenuItems(CliMenu $menu, $callable)
+    // {
+    //     $units = ['Inch' , 'Feet', 'Yard','Mile','Millimeter','Centimeter','Meter','Kilometer'];
+
+    //     foreach($units as $unit){
+    //         $menu->addItem($unit, $callable);
+    //     }
+
+
+
+    // }
 
 }
