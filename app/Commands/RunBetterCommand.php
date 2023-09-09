@@ -66,7 +66,7 @@ class RunBetterCommand extends Command
                 }
             };
 
-            $value = $input->setPromptText('Enter Length in '.$from_unit.'')->ask()->fetch();
+            $value = $input->setPromptText('Enter Length in '.$from_unit)->ask()->fetch();
 
 
             $in_meter = round($this->to_meter($from_unit, $value), 3); // first convert to meter
@@ -119,7 +119,7 @@ class RunBetterCommand extends Command
             ->open();
     }
 
-    protected function to_meter($from_unit, $value): float
+    protected function to_meter(string $from_unit, float $value): float
     {
         switch ($from_unit) {
             case 'Inch':
@@ -142,7 +142,7 @@ class RunBetterCommand extends Command
         }
     }
 
-    protected function from_meter($to_unit, $value): float
+    protected function from_meter(string $to_unit, float $value): float
     {
         switch ($to_unit) {
             case 'Inch':
