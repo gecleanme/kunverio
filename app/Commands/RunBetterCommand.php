@@ -12,7 +12,6 @@ use PhpSchool\CliMenu\Input\InputIO;
 use function Termwind\{render};
 
 
-
 class RunBetterCommand extends Command
 {
     protected $signature = 'runbetter';
@@ -23,9 +22,8 @@ class RunBetterCommand extends Command
     {
 
         $value = 0;
-        $from_unit = '';
-        $to_unit = '';
-
+        $from_unit = 'Inch';
+        $to_unit = 'Centimeter';
 
 
         $fromCallable = function (CliMenu $menu) use (&$from_unit) {
@@ -47,8 +45,8 @@ class RunBetterCommand extends Command
             $menu->redraw();
 
             $to_unit = $menu->getSelectedItem()->getText();
-        };
 
+        };
 
 
         $valueCallable = function (CliMenu $menu) use (&$value, &$from_unit, &$to_unit) {
@@ -58,11 +56,13 @@ class RunBetterCommand extends Command
                 ->setFg('black');
 
             $input = new class (new InputIO($menu, $menu->getTerminal()), $style) extends Text {
-                public function validate(string $value) : bool
+                public function validate(string $value): bool
                 {
-                    if(is_numeric($value))
+                    if (is_numeric($value)) {
                         return true;
-                    else return false;
+                    } else {
+                        return false;
+                    }
                 }
             };
 
@@ -74,23 +74,21 @@ class RunBetterCommand extends Command
 
             $menu->close();
 
-            $render_string= '<div class="py-1 ml-2 w-full justify-center text-center">
+            $render_string = '<div class="py-1 ml-2 w-full justify-center text-center">
         <div class="px-1 bg-blue-300 text-black">Kunverio</div>
         <em class="ml-1 bg-yellow-500 text-black">
-        Converting '. $value .' '.$from_unit.' to '.$to_unit.'
+        Converting '.$value.' '.$from_unit.' to '.$to_unit.'
         </em>
-        <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '. $value .' '.$from_unit .' is '. $tovalue. ' '.$to_unit.'  </b>
+        <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '.$value.' '.$from_unit.' is '.$tovalue.' '.$to_unit.'  </b>
 
-        </div>'
-
-            ;
+        </div>';
 
             render($render_string);
 
         };
 
         $menu = (new CliMenuBuilder)
-            ->setTitle('Step I: Select a Length unit to convert from')
+            ->setTitle('Step I: Select a Length unit to convert from (Default: Inch)')
             ->setWidth(80)
             ->setMarginAuto()
             ->setForegroundColour('green')
@@ -103,7 +101,7 @@ class RunBetterCommand extends Command
                 $style->setItemExtra('[SELECTED]');
             })
             ->addSubMenu('Next', function (CliMenuBuilder $b) use ($toCallable, $valueCallable) {
-                $b->setTitle('Step II: Select a Length unit to convert to');
+                $b->setTitle('Step II: Select a Length unit to convert to (Default: Centimeter)');
 
                 $this->getMenuItems($b, $toCallable);
 
@@ -144,7 +142,7 @@ class RunBetterCommand extends Command
         }
     }
 
-    protected function from_meter($to_unit, $value) : float
+    protected function from_meter($to_unit, $value): float
     {
         switch ($to_unit) {
             case 'Inch':
@@ -171,12 +169,11 @@ class RunBetterCommand extends Command
 
     protected function getMenuItems(CliMenuBuilder $menu, $callable)
     {
-        $units = ['Inch' , 'Feet', 'Yard','Mile','Millimeter','Centimeter','Meter','Kilometer'];
+        $units = ['Inch', 'Feet', 'Yard', 'Mile', 'Millimeter', 'Centimeter', 'Meter', 'Kilometer'];
 
-        foreach($units as $unit){
+        foreach ($units as $unit) {
             $menu->addItem($unit, $callable);
         }
-
 
 
     }
