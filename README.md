@@ -11,7 +11,7 @@
 ## Features:
 
 -   Easy to use
--   Elegant UI
+-   Elegant CLI
 
 ## Prerequisites
 
