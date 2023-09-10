@@ -74,14 +74,14 @@ class RunBetterCommand extends Command
 
             $menu->close();
 
-            $render_string = '<div class="py-1 ml-2 w-full justify-center text-center">
+            $render_string = `<div class="py-1 ml-2 w-full justify-center text-center">
         <div class="px-1 bg-blue-300 text-black">Kunverio</div>
         <em class="ml-1 bg-yellow-500 text-black">
-        Converting '.$value.' '.$from_unit.' to '.$to_unit.'
+        Converting {$value} {$from_unit} {$to_unit}
         </em>
-        <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> '.$value.' '.$from_unit.' is '.$tovalue.' '.$to_unit.'  </b>
+        <b class="block bg-green-500 text-white p-8 w-full justify-center text-center"> {$value} {$from_unit} {$tovalue} {$to_unit}</b>
 
-        </div>';
+        </div>`;
 
             render($render_string);
 
